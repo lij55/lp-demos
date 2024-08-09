@@ -10,8 +10,10 @@ st.set_page_config(
 
 args = {}
 
-st.header('护士APN排班示例')
-st.info('周排班，每个护士5个班次， 每天最多一个班次，夜班尽可能平均')
+st.header('护士排班示例')
+with st.expander("点击展开说明"):
+    st.info('以APN为例，按周排班，每天最多一个班次，夜班尽可能平均')
+    st.info('N班: 0-8\n\nA班: 8-16\n\nP班: 16-24')
 num_nurses = st.number_input('护士人数', format="%d", value=15, step=1, min_value=1, max_value=30)
 
 group_shift = st.container(border=True)
@@ -39,6 +41,12 @@ if c_rest:
     args["extra_rest_p"] = group_rest.number_input(f'P班后休息班数', format="%d", value=1, step=1, min_value=1, max_value=5)
 
 
+group_shifts = st.container(border=True)
+c_shifts = group_shifts.checkbox('每周工作班次')
+
+if c_shifts:
+    args["min_shifts"] = group_shifts.number_input(f'最少班次', format="%d", value=4, step=1, min_value=1, max_value=7)
+    args["max_shifts"] = group_shifts.number_input(f'最多班次', format="%d", value=5, step=1, min_value=1, max_value=7)
 def int_to_name(v):
     if v == 0:
         return ""

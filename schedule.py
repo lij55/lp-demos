@@ -60,10 +60,16 @@ def solve_schedule(num_nurses, args):
         for d in range(num_days):
             model.Add(sum(shifts[(n,d * NUM_SHIFTS + i)] for i in range(NUM_SHIFTS)) <= 1) #5 shifts each week
 
-    # 每周5天
+    # 每周总天数
+    min_shifts = args.get("min_shifts", 0)
+    max_shifts = args.get("max_shifts", 0)
     for n in range(num_nurses):
         for w in range(num_weeks):
-            model.Add(sum(shifts[(n, w * 7 * NUM_SHIFTS + ds)] for ds in range(7*NUM_SHIFTS)) <= 5) #5 shifts each week
+            if min_shifts > 0:
+                model.Add(sum(shifts[(n, w * 7 * NUM_SHIFTS + ds)] for ds in range(7 * NUM_SHIFTS)) >= min_shifts)
+            if max_shifts > 0:
+                model.Add(sum(shifts[(n, w * 7 * NUM_SHIFTS + ds)] for ds in range(7 * NUM_SHIFTS)) <= max_shifts)
+            #model.Add(sum(shifts[(n, w * 7 * NUM_SHIFTS + ds)] for ds in range(7*NUM_SHIFTS)) == 5) #5 shifts each week
 
     # A班后至少休几个班次
 
